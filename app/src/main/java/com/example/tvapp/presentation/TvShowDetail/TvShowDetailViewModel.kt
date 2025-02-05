@@ -43,6 +43,8 @@ class TvShowDetailViewModel @Inject constructor(
             is TvShowDetailEvent.OnNavigationBack -> {
                 sendUiEvent(UiEvent.PopBackStack)
             }
+
+            else -> {}
         }
     }
 
@@ -73,6 +75,8 @@ class TvShowDetailViewModel @Inject constructor(
                         isLoading = true
                     )
                 }
+
+                else -> {}
             }
         }.launchIn(viewModelScope)
     }

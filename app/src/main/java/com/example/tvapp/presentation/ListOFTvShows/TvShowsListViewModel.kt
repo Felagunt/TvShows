@@ -42,9 +42,10 @@ class TvShowsListViewModel @Inject constructor(
 
             is TvShowsEvent.OnTvShowClick -> {
                 sendUiEvent(
-                    UiEvent.Navigate(event.tvShow.id.toString())
+                    UiEvent.Navigate(
+                        Screen.TvShowDetail.route + "?tvShowId="${event.tvShow.id.toString()}")
 //                    UiEvent.Navigate(
-////                        event.tvShow.id.toString()
+//                        event.tvShow.id.toString()
 //                        Screen.TvShowDetail.route + "?tvshowId=${event.tvShow.id}"
 //                    )
                 )

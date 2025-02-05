@@ -16,9 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.tvapp.presentation.Route
 import com.example.tvapp.presentation.TvShowDetail.components.ContentScreen
 import com.example.tvapp.presentation.TvShowDetail.components.ErrorScreen
 import com.example.tvapp.presentation.TvShowDetail.components.LoadingScreen
@@ -26,41 +29,55 @@ import com.example.tvapp.presentation.UiEvent
 import com.example.tvapp.util.CollectFlowWithLifecycle
 import kotlinx.coroutines.flow.Flow
 
+@Composable
+fun TvShowDetailScreenRoot(
+    viewModel: TvShowDetailViewModel,
+    onBackClick: () -> Unit
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    TvShowDetailScreen(
+        state = state,
+        onEvent = {
+            onBackClick()
+        }
+    )
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TvShowDetailScreen(
-    onPopBackStack: (UiEvent.PopBackStack) -> Unit,
     state: TvShowDetailState,
-    onEvent: (TvShowDetailEvent) -> Unit,
-    uiEvent: Flow<UiEvent?>
+    onEvent: (TvShowDetailEvent) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
 
-    CollectFlowWithLifecycle(flow = uiEvent) { event ->
-        when (event) {
-            is UiEvent.Navigate -> {
-
-            }
-
-            is UiEvent.PopBackStack -> {
-                onEvent(TvShowDetailEvent.OnNavigationBack)
-            }
-
-            is UiEvent.ShowSnackbar -> {
-                val result = snackbarHostState.showSnackbar(
-                    message = event.message,
-                    actionLabel = event.action
-                )
-                if (result == SnackbarResult.ActionPerformed) {
-                    //onEvent(TvShowDetailEvent.OnAddFavoriteTvShow)//TODO
-                }
-            }
-
-            else -> {}
-        }
-    }
+//    CollectFlowWithLifecycle(flow = uiEvent) { event ->
+//        when (event) {
+//            is UiEvent.Navigate -> {
+//
+//            }
+//
+//            is UiEvent.PopBackStack -> {
+//                onEvent(TvShowDetailEvent.OnNavigationBack)
+//            }
+//
+//            is UiEvent.ShowSnackbar -> {
+//                val result = snackbarHostState.showSnackbar(
+//                    message = event.message,
+//                    actionLabel = event.action
+//                )
+//                if (result == SnackbarResult.ActionPerformed) {
+//                    //onEvent(TvShowDetailEvent.OnAddFavoriteTvShow)//TODO
+//                }
+//            }
+//
+//            else -> {}
+//        }
+//    }
 
     Scaffold(
         modifier = Modifier
@@ -99,13 +116,13 @@ fun TvShowDetailScreen(
             state = state,
             Modifier.padding(paddingValues.calculateTopPadding())
         )
-        if(state.error.isNotBlank()) {
+        if (state.error.isNotBlank()) {
             ErrorScreen(
                 state = state,
                 modifier = Modifier.padding()
             )
         }
-        if(state.isLoading) {
+        if (state.isLoading) {
             LoadingScreen(
                 state = state,
                 modifier = Modifier

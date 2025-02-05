@@ -1,64 +1,103 @@
 package com.example.tvapp.util
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.tvapp.presentation.ListOFTvShows.TvShowListScreen
+import com.example.tvapp.presentation.ListOFTvShows.TvShowListScreenRoot
 import com.example.tvapp.presentation.ListOFTvShows.TvShowsListViewModel
-import com.example.tvapp.presentation.Screen
+import com.example.tvapp.presentation.Route
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailScreen
+import com.example.tvapp.presentation.TvShowDetail.TvShowDetailScreenRoot
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailViewModel
-import com.example.tvapp.presentation.UiEvent
-import com.example.tvapp.tvApp
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Screen.ListOfTvShows.route
+        startDestination = Route.TvGraph
     ) {
-        composable(route = Screen.ListOfTvShows.route) {
-            val viewModel = hiltViewModel<TvShowsListViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
+        navigation<Route.TvGraph>(
+            startDestination = Route.TvShowsList
+        ) {
+            composable<Route.TvShowsList>(
+                exitTransition = { slideOutHorizontally() },
+                popEnterTransition = { slideInHorizontally() }
+            ) {
+                val viewModel = hiltViewModel<TvShowsListViewModel>()
+                TvShowListScreenRoot(
+                    viewModel = viewModel,
+                    onClickTvShow = { tvShow ->
+                        navController.navigate(
+                            Route.TvShowDetail(tvShow.id.toString())
+                        )
+                    }
+                )
+            }
 
-            TvShowListScreen(
-                onNavigate =
-                {tvShow ->
-                    //navController.navigate((Screen.TvShowDetail.route +"id=${tvShow.route.}"))
-                    navController.navigate(Screen.TvShowDetail.route + "id=${tvShow.route} ")
-                },
-                state = state,
-                onEvent = viewModel::onEvent,
-                uiEvent = viewModel.uiEvent
-            )
+            composable<Route.TvShowDetail>(
+                enterTransition = { slideInHorizontally() },
+                exitTransition = { slideOutHorizontally() }
+            ) {
+                val viewModel = hiltViewModel<TvShowDetailViewModel>()
+
+                TvShowDetailScreenRoot(
+                    viewModel = viewModel,
+                    onBackClick = {
+                        navController.navigateUp()
+                    }
+                )
+            }
         }
 
-        composable(
-            route = Screen.TvShowDetail.route + "/{tvShowId}",
-        ) {navBackStackEntry ->
-            val argument = navBackStackEntry.arguments?.getString("tvShowId")
-            val viewModel = hiltViewModel<TvShowDetailViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-
-            TvShowDetailScreen(
-                onPopBackStack = { UiEvent.PopBackStack },
-                state = state,
-                onEvent = viewModel::onEvent,
-                uiEvent = viewModel.uiEvent
-            )
-        }
     }
 }
+
+//
+//@Composable
+//fun Navigation() {
+//    val navController = rememberNavController()
+//    NavHost(
+//        navController = navController,
+//        startDestination = Screen.ListOfTvShows.route
+//    ) {
+//        composable(route = Screen.ListOfTvShows.route) {
+//            val viewModel = hiltViewModel<TvShowsListViewModel>()
+//            val state by viewModel.state.collectAsStateWithLifecycle()
+//
+//            TvShowListScreen(
+//                onNavigate =
+//                {tvShow ->
+//                    //navController.navigate((Screen.TvShowDetail.route +"id=${tvShow.route.}"))
+//                    navController.navigate(Screen.TvShowDetail.route + "id=${tvShow.route} ")
+//                },
+//                state = state,
+//                onEvent = viewModel::onEvent,
+//                uiEvent = viewModel.uiEvent
+//            )
+//        }
+//
+//        composable(
+//            route = Screen.TvShowDetail.route + "/{tvShowId}",
+//        ) {navBackStackEntry ->
+//            val argument = navBackStackEntry.arguments?.getString("tvShowId")
+//            val viewModel = hiltViewModel<TvShowDetailViewModel>()
+//            val state by viewModel.state.collectAsStateWithLifecycle()
+//
+//            TvShowDetailScreen(
+//                onPopBackStack = { UiEvent.PopBackStack },
+//                state = state,
+//                onEvent = viewModel::onEvent,
+//                uiEvent = viewModel.uiEvent
+//            )
+//        }
+//    }
+//}
 
 //    val navController = rememberNavController()
 //

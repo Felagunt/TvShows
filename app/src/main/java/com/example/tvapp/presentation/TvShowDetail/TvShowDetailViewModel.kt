@@ -3,17 +3,19 @@ package com.example.tvapp.presentation.TvShowDetail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.example.tvapp.domain.use_case.get_tvShow.GetTvShowUseCase
-import com.example.tvapp.presentation.UiEvent
+import com.example.tvapp.presentation.Route
 import com.example.tvapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,17 +24,27 @@ class TvShowDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    private val tvShowId = savedStateHandle.toRoute<Route.TvShowDetail>().id.toInt()
+
     private val _state = MutableStateFlow(TvShowDetailState())
-    val state = _state.asStateFlow()
+    val state = _state.
+            onStart {
+                getTvShow(tvShowId)
+            }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            _state.value
+        )
 
-    private val _uiEvent = Channel<UiEvent>()
-    val uiEvent = _uiEvent.receiveAsFlow()
-
-    init {
-        savedStateHandle.get<Int>("id")?.let { id ->
-                    getTvShow(id)
-        }
-    }
+//    private val _uiEvent = Channel<UiEvent>()
+//    val uiEvent = _uiEvent.receiveAsFlow()
+//
+//    init {
+//        savedStateHandle.get<Int>("id")?.let { id ->
+//                    getTvShow(id)
+//        }
+//    }
 
     fun onEvent(event: TvShowDetailEvent) {
         when (event) {
@@ -41,46 +53,50 @@ class TvShowDetailViewModel @Inject constructor(
             }
 
             is TvShowDetailEvent.OnNavigationBack -> {
-                sendUiEvent(UiEvent.PopBackStack)
+                //sendUiEvent(UiEvent.PopBackStack)
             }
 
             else -> {}
         }
     }
 
-    private fun sendUiEvent(event: UiEvent) {
-        viewModelScope.launch {
-            _uiEvent.send(event)
-        }
-    }
+//    private fun sendUiEvent(event: UiEvent) {
+//        viewModelScope.launch {
+//            _uiEvent.send(event)
+//        }
+//    }
 
     private fun getTvShow(id: Int) {
         getTvShowUseCase(id).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _state.value = _state.value.copy(
-                        tvShow = result.data,
-                        isLoading = false
-                    )
+                    _state.update {
+                        it.copy(
+                            tvShow = result.data,
+                            isLoading = false
+                        )
+                    }
                 }
 
                 is Resource.Error -> {
-                    _state.value = _state.value.copy(
-                        error = result.message ?: "An unknown error"
-                    )
+                    _state.update {
+                        it.copy(
+                            error = result.message ?: "An unknown error"
+                        )
+                    }
                 }
 
                 is Resource.Loading -> {
-                    _state.value = _state.value.copy(
-                        isLoading = true
-                    )
+                    _state.update {
+                        it.copy(
+                            isLoading = true
+                        )
+                    }
                 }
-
-                else -> {}
             }
         }.launchIn(viewModelScope)
     }
-}
+    }
 /*
 package com.example.jetpack.viewmodels
 import android.app.Application

@@ -38,8 +38,11 @@ fun TvShowDetailScreenRoot(
 
     TvShowDetailScreen(
         state = state,
-        onEvent = {
-            onBackClick()
+        onEvent = { event ->
+            when (event) {
+                is TvShowDetailEvent.OnNavigationBack -> onBackClick()
+                else -> Unit
+            }
         }
     )
 }

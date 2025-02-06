@@ -43,7 +43,7 @@ fun Navigation() {
             composable<Route.TvShowDetail>(
                 enterTransition = { slideInHorizontally() },
                 exitTransition = { slideOutHorizontally() }
-            ) {
+            ) { 
                 val viewModel = hiltViewModel<TvShowDetailViewModel>()
 
                 TvShowDetailScreenRoot(

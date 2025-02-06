@@ -6,6 +6,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'org.jetbrains.kotlin.plugin.compose'
 
 }
 
@@ -48,7 +49,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.5.4'
+        kotlinCompilerExtensionVersion '1.5.8'
     }
     packagingOptions {
         resources {
@@ -84,6 +85,7 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    //implementation("org.jetbrains.kotlin.android:2.0.21")
 
     // Compose dependencies
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
@@ -97,7 +99,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
     //Dagger - Hilt
-    implementation 'com.google.dagger:hilt-android:2.46.1'
+    implementation 'com.google.dagger:hilt-android:2.48'
     //kapt 'com.google.dagger:hilt-compiler:2.46.1'
     //kapt 'com.google.dagger:hilt-android-compiler:2.46'
     //implementation "com.google.dagger:hilt-android:2.44"

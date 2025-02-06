@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,6 +38,12 @@ fun TvShowListItem(
     //OnNavigateToTvShow: (TvShow) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    Surface(
+        shape = RoundedCornerShape(32.dp),
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.2f)
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -43,44 +51,14 @@ fun TvShowListItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = CenterVertically
         ) {
-//            GlideImage(
-//                imageModel = tvShow.image,
-//                modifier = modifier,
-//                loading = {
-//                    CircularProgressIndicator(
-//                        modifier = Modifier
-//                            .align(CenterVertically)
-//                    )
-//                },
-//                failure = {
-//                    Text(text = "")
-//                }
-//            )
 
-            val painter = rememberAsyncImagePainter(model = ImageRequest.Builder(LocalContext.current)
-                .data(tvShow.image)
-                .size(coil.size.Size.ORIGINAL)
-                .build()
+            val painter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(tvShow.image)
+                    .size(coil.size.Size.ORIGINAL)
+                    .build()
             )
-            //val state = painter.state
-
-//            SubcomposeAsyncImage(
-//                model = "https://example.com/image.jpg",
-//                contentDescription = "Tv show's ${tvShow.name} image"
-//            ) {
-//                val state = painter.state
-//                if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-//                    CircularProgressIndicator()
-//                } else {
-//                    SubcomposeAsyncImageContent()
-//                }
-//            }
-//
-//            AsyncImage(
-//                model = tvShow.image,
-//                contentDescription =
-//            )
-            if(painter.state is AsyncImagePainter.State.Loading ) {
+            if (painter.state is AsyncImagePainter.State.Loading) {
                 CircularProgressIndicator()
             } else {
                 Image(
@@ -104,7 +82,7 @@ fun TvShowListItem(
                 Divider(modifier = modifier.fillMaxWidth(), color = Color.Gray)
                 Text(
                     text = tvShow.status,
-                    color =if(tvShow.status == "ended") Color.Gray else Color.Green,
+                    color = if (tvShow.status == "ended") Color.Gray else Color.Green,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Divider(modifier = modifier.fillMaxWidth(), color = Color.Gray)
@@ -114,5 +92,7 @@ fun TvShowListItem(
                 )
             }
         }
+
+    }
 
 }

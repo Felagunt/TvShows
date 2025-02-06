@@ -100,6 +100,7 @@ fun TvShowListScreen(
                         .clickable {
                             onEvent(TvShowsEvent.OnTvShowClick(tvShow))
                         }
+                        .padding(top = 8.dp, bottom = 8.dp)
                 )
             }
         }

@@ -4,6 +4,7 @@ import com.example.tvapp.data.remote.TvShowApi
 import com.example.tvapp.data.repository.ShowsRepositoryImp
 import com.example.tvapp.domain.repository.ShowsRepository
 import com.example.tvapp.util.Constants.BASE_URL
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,6 +33,5 @@ object AppModule {
     fun provideShowsRepository(api: TvShowApi): ShowsRepository {
         return ShowsRepositoryImp(api)
     }
-
 
 }

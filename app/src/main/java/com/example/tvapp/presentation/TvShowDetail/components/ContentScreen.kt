@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailState
@@ -39,21 +40,31 @@ fun ContentScreen(
             Spacer(modifier = Modifier.height(8.dp))
             TvRow(state = state)
             Spacer(modifier = Modifier.height(8.dp))
-            Column {
-                Text(text = "Summary:", style = MaterialTheme.typography.bodyLarge)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                Arrangement.Center,
+                Alignment.CenterHorizontally
+            ) {
+                Text(text = "Synopsis:", style = MaterialTheme.typography.bodyLarge)
                 Text(text = tvShow.summary, style = MaterialTheme.typography.bodySmall)
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row {
-                Text(text = "Official site", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Official site: ", style = MaterialTheme.typography.bodyLarge)
                 Text(
                     text = tvShow.officialSite,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Row {
-                Text(text = "url", style = MaterialTheme.typography.bodySmall)
+            Row(
+                modifier = Modifier
+                .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "url: ", style = MaterialTheme.typography.titleMedium)
                 Text(text = tvShow.url, style = MaterialTheme.typography.bodySmall)
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -63,6 +74,7 @@ fun ContentScreen(
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalArrangement = Arrangement.Center
             ) {
+                Text(text = "Genres: ", style = MaterialTheme.typography.titleMedium)
                 tvShow.genres.forEach { genre ->
                     Text(text = genre, style = MaterialTheme.typography.bodyLarge)
                 }

@@ -1,6 +1,8 @@
 package com.example.tvapp.presentation.TvShowDetail.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
@@ -18,11 +20,12 @@ fun TvRow(
     state.tvShow?.let {
 
 
-        Row(
+        Column (
             modifier = modifier
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+                //.background(MaterialTheme.colorScheme.inverseSurface),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Lang: ${state.tvShow.language}",

@@ -41,7 +41,7 @@ class TvShowsListViewModel @Inject constructor(
     fun onEvent(event: TvShowsEvent) {
         when(event) {
             is TvShowsEvent.OnAddFavoriteTvShow -> {
-
+                //TODO add repo and collect from there
 
             }
             is TvShowsEvent.OnRefresh -> {

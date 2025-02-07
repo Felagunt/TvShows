@@ -92,7 +92,10 @@ fun TvShowListScreen(
                     style = MaterialTheme.typography.titleLarge
                 )
             }
-            items(state.tvShows) {tvShow ->
+            items(
+                state.tvShows,
+                key = { it.id }
+            ) {tvShow ->
                 TvShowListItem(
                     tvShow = tvShow,
                     //OnNavigateToTvShow ={},

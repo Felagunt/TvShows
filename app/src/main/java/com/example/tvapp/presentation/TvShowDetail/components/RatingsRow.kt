@@ -21,7 +21,7 @@ fun RatingsRow(
         Row(
             modifier = modifier
                 .fillMaxWidth(),
-            Arrangement.SpaceBetween,
+            Arrangement.SpaceEvenly,
             Alignment.CenterVertically
         ) {
             Column {

@@ -20,27 +20,30 @@ fun CustomAsyncImage(
     state: TvShowDetailState,
     modifier: Modifier = Modifier
 ) {
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(state.tvShow!!.image)
-            .size(Size.ORIGINAL)
-            .build()
-    )
-    val transition by animateFloatAsState(
-        targetValue = if (painter.state is AsyncImagePainter.State.Success) 1f else 0f,
-        label = "transSuccess"
-    )
-    if (painter.state is AsyncImagePainter.State.Loading) {
-        LoadingAnimation()
-    } else {
-        Image(
-            painter = painter,
-            contentDescription = "Image of ${state.tvShow.name}",
-            modifier = modifier
-                //.saturation(transition)
-                .scale(.8f + (.2f * transition))
-                //.graphicsLayer { rotationX = (1f - transition) * 5f }
-                .alpha(min(1f, transition / .2f))
+    state.tvShow?.let {
+
+        val painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(state.tvShow.originalImg)
+                .size(Size.ORIGINAL)
+                .build()
         )
+        val transition by animateFloatAsState(
+            targetValue = if (painter.state is AsyncImagePainter.State.Success) 1f else 0f,
+            label = "transSuccess"
+        )
+        if (painter.state is AsyncImagePainter.State.Loading) {
+            LoadingAnimation()
+        } else {
+            Image(
+                painter = painter,
+                contentDescription = "Image of ${state.tvShow.name}",
+                modifier = modifier
+                    //.saturation(transition)
+                    .scale(.8f + (.2f * transition))
+                    //.graphicsLayer { rotationX = (1f - transition) * 5f }
+                    .alpha(min(1f, transition / .2f))
+            )
+        }
     }
 }

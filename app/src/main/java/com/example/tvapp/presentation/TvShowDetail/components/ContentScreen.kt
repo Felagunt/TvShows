@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,12 +29,17 @@ fun ContentScreen(
     modifier: Modifier = Modifier,
     //paddingValues: PaddingValues
 ) {
-    state.tvShow?.let {tvShow ->
+    //val paddings by modifier.
+
+    state.tvShow?.let { tvShow ->
 
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding()
+                //.verticalScroll(rememberScrollState())
+                .padding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
             //val painter = rememberAsyncImagePainter()
             CustomAsyncImage(state = state)
@@ -60,7 +68,7 @@ fun ContentScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
-                .fillMaxWidth(),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -70,9 +78,9 @@ fun ContentScreen(
             Spacer(modifier = Modifier.height(8.dp))
             FlowRow(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .wrapContentSize(Alignment.Center),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
-                verticalArrangement = Arrangement.Center
+                //verticalArrangement = Arrangement.Center
             ) {
                 Text(text = "Genres: ", style = MaterialTheme.typography.titleMedium)
                 tvShow.genres.forEach { genre ->

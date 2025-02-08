@@ -29,6 +29,12 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                includeCompileClasspath true
+//            }
+//        }
     }
 
     buildTypes {
@@ -86,6 +92,12 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
     //implementation("org.jetbrains.kotlin.android:2.0.21")
+
+    //room
+    implementation "androidx.room:room-runtime:2.4.3"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    //kapt "adnroidx.room:room-compiler:2.4.3"
+    implementation "androidx.room:room-ktx:2.4.3"
 
     // Compose dependencies
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"

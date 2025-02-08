@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailState
 
@@ -55,7 +56,11 @@ fun ContentScreen(
                 Alignment.CenterHorizontally
             ) {
                 Text(text = "Synopsis:", style = MaterialTheme.typography.bodyLarge)
-                Text(text = tvShow.summary, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = tvShow.summary,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Justify
+                )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row {

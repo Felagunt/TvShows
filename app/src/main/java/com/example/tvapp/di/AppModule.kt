@@ -46,7 +46,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideShowsRepository(api: TvShowApi): ShowsRepository {
-        return ShowsRepositoryImp(api)
+        return ShowsRepositoryImp(
+            api,
+            favoriteTvShowDao = 
+        )
     }
 
 }

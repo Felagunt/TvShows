@@ -13,3 +13,16 @@ fun TvShow.toTvShowEntity(): TvShowEntity {
         status = status,
     )
 }
+
+fun TvShowEntity.toTvShow(): TvShow {
+    return TvShow(
+        id = id,
+        image = image,
+        language = language,
+        name = name,
+        status = status,
+    )
+}
+
+val str = "43434 4343"
+val result = str.split(" ")

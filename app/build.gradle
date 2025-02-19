@@ -3,16 +3,17 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
+   //id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.plugin.serialization'
     id 'org.jetbrains.kotlin.plugin.compose'
+    id("com.google.devtools.ksp")
 
 }
-
-kotlin {
-    jvmToolchain(8)
-}
+//
+//kotlin {
+//    jvmToolchain(8)
+//}
 
 android {
     namespace 'com.example.tvapp'
@@ -62,6 +63,7 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    task("testClasses")
 }
 
 //configurations.all {
@@ -94,10 +96,10 @@ dependencies {
     //implementation("org.jetbrains.kotlin.android:2.0.21")
 
     //room
-    implementation "androidx.room:room-runtime:2.4.3"
+    implementation "androidx.room:room-runtime:2.6.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     //kapt "adnroidx.room:room-compiler:2.4.3"
-    implementation "androidx.room:room-ktx:2.4.3"
+    //implementation "androidx.room:room-ktx:2.4.3"
 
     // Compose dependencies
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
@@ -112,13 +114,13 @@ dependencies {
 
     //Dagger - Hilt
     implementation 'com.google.dagger:hilt-android:2.50'
-    annotationProcessor 'com.google.dagger:hilt-compiler:2.50'
+    ksp 'com.google.dagger:hilt-compiler:2.50'
     //kapt 'com.google.dagger:hilt-compiler:2.46.1'
     //kapt 'com.google.dagger:hilt-android-compiler:2.46'
     //implementation "com.google.dagger:hilt-android:2.44"
     //implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
     //kapt "androidx.hilt:hilt-compiler:1.0.0"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.1.0-alpha01'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -133,5 +135,5 @@ dependencies {
     //Coil
     implementation("io.coil-kt:coil-compose:2.2.2")
 
-
+    //kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.4.2"
 }

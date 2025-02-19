@@ -48,6 +48,7 @@ fun TvShowDetailScreenRoot(
                 is TvShowDetailEvent.OnNavigationBack -> onBackClick()
                 else -> Unit
             }
+            viewModel.onEvent(event)
         }
     )
 }
@@ -111,19 +112,19 @@ fun TvShowDetailScreen(
                         onEvent(TvShowDetailEvent.OnAddFavoriteTvShow)
                     }) {
                         Icon(
-                            imageVector = Icons.Default.FavoriteBorder,
-//                            if(isFavorite) {
-//                                Icons.Filled.Favorite
-//                            } else {
-//                                Icons.Outlined.FavoriteBorder
-//                            },
-                            //tint = MaterialTheme.colorScheme.surfaceTint,
-                            contentDescription = "Add to favorite"
-//                            if(isFavorite) {
-//                                "Add to favorite"
-//                            } else {
-//                                "Remove from favorite"
-//                            }
+                            imageVector = //Icons.Default.FavoriteBorder,
+                            if(state.isFavorite) {
+                                Icons.Filled.Favorite
+                            } else {
+                                Icons.Outlined.FavoriteBorder
+                            },
+                            tint = MaterialTheme.colorScheme.surfaceTint,
+                            contentDescription = //"Add to favorite"
+                            if(state.isFavorite) {
+                                "Add to favorite"
+                            } else {
+                                "Remove from favorite"
+                            }
                         )
                     }
                 },

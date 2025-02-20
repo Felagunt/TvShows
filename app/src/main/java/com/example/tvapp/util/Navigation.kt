@@ -11,7 +11,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tvapp.presentation.ListOFTvShows.TvShowListScreenRoot
 import com.example.tvapp.presentation.ListOFTvShows.TvShowsListViewModel
 import com.example.tvapp.presentation.Route
-import com.example.tvapp.presentation.TvShowDetail.TvShowDetailScreen
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailScreenRoot
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailViewModel
 

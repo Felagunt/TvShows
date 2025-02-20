@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
     entities = [TvShowEntity::class]
 )
 abstract class FavoriteTvShowDatabase: RoomDatabase() {
-    abstract val favoriteTvShowDao: FavoriteTvShowDao
+    abstract fun favoriteTvShowDao(): FavoriteTvShowDao
 
     companion object {
         const val DB_NAME = "tvShow.db"

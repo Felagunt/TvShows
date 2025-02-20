@@ -1,7 +1,9 @@
 package com.example.tvapp.presentation.TvShowDetail
 
-sealed class TvShowDetailEvent {
-    data object OnNavigationBack: TvShowDetailEvent()
-    object OnAddFavoriteTvShow: TvShowDetailEvent()
+import com.example.tvapp.domain.models.TvShow
+
+sealed interface TvShowDetailEvent {
+    data object OnNavigationBack: TvShowDetailEvent
+    data object OnAddFavoriteTvShow: TvShowDetailEvent
 
 }

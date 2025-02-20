@@ -2,6 +2,7 @@ package com.example.tvapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.tvapp.data.database.FavoriteTvShowDao
 import com.example.tvapp.data.database.FavoriteTvShowDatabase
 import com.example.tvapp.data.remote.TvShowApi
 import com.example.tvapp.data.repository.ShowsRepositoryImp
@@ -34,6 +35,11 @@ object AppModule {
     }
 
     @Provides
+    fun provideTvShowDao(database: FavoriteTvShowDatabase): FavoriteTvShowDao {
+        return database.favoriteTvShowDao()
+    }
+
+    @Provides
     @Singleton
     fun provideTvShowApi(): TvShowApi {
         return Retrofit.Builder()
@@ -45,10 +51,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideShowsRepository(api: TvShowApi): ShowsRepository {
+    fun provideShowsRepository(api: TvShowApi, dao: FavoriteTvShowDao): ShowsRepository {
         return ShowsRepositoryImp(
-            api,
-            favoriteTvShowDao = 
+            api = api,
+            favoriteTvShowDao = dao
         )
     }
 

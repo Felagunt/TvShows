@@ -11,7 +11,7 @@ class TvShowDetailEntity (
     val thetvdb: Int,
     val tvrage: Int,
     val genres: List<String>,
-    //val image: Image,
+    //val image: String,
     val name: String,
     val image: String,
     val originalImg: String,

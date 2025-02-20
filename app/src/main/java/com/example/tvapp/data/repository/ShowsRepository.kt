@@ -5,6 +5,7 @@ import com.example.tvapp.data.remote.TvShowApi
 import com.example.tvapp.data.remote.dto.TvShowDto
 import com.example.tvapp.data.remote.dto.details.TvShowDetailDto
 import com.example.tvapp.data.remote.mappers.toTvShow
+import com.example.tvapp.data.remote.mappers.toTvShowDetailEntity
 import com.example.tvapp.data.remote.mappers.toTvShowEntity
 import com.example.tvapp.domain.models.TvShow
 import com.example.tvapp.domain.models.TvShowDetail

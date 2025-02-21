@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -47,7 +48,8 @@ fun TvShowListItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(start = 8.dp)
+            ,
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = CenterVertically
         ) {
@@ -66,11 +68,12 @@ fun TvShowListItem(
                     contentDescription = "Tv show's ${tvShow.name} image",
                     modifier = Modifier
                         .alpha(1f)
+                        .clip(RoundedCornerShape(8.dp))
                 )
             }
             Column(
                 modifier = modifier
-                    .padding(20.dp),
+                    .padding(10.dp),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

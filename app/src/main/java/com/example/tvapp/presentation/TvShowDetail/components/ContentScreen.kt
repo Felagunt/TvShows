@@ -51,7 +51,8 @@ fun ContentScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
             ) {
@@ -73,7 +74,8 @@ fun ContentScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

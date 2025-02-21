@@ -5,5 +5,7 @@ import com.example.tvapp.domain.models.TvShow
 data class TvShowsListState(
     val isLoading: Boolean = false,
     val tvShows: List<TvShow> = emptyList(),
-    val error: String = ""
+    val favoriteTvShows: List<TvShow> = emptyList(),
+    val error: String = "",
+    val selectedIndex: Int = 0
 )

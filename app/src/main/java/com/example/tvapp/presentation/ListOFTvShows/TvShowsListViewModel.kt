@@ -2,9 +2,11 @@ package com.example.tvapp.presentation.ListOFTvShows
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tvapp.domain.repository.ShowsRepository
 import com.example.tvapp.domain.use_case.get_tvShows.GetTvShowsListUseCase
 import com.example.tvapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
@@ -16,19 +18,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TvShowsListViewModel @Inject constructor(
-    private val getTvShowsListUseCase: GetTvShowsListUseCase
+    private val getTvShowsListUseCase: GetTvShowsListUseCase,
+    private val repository: ShowsRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(TvShowsListState())
     val state = _state
         .onStart {
             getTvShows()
+            observeFavoriteTvShow()
         }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
             _state.value
         )
+
+    private var observeFavoriteJob: Job? = null
 //    val state = _state.asStateFlow()
 //
 //    private val _uiEvent = Channel<UiEvent>()
@@ -54,8 +60,64 @@ class TvShowsListViewModel @Inject constructor(
                 }
 
             }
+
+            is TvShowsEvent.OnTabSelected -> {
+                _state.update {
+                    it.copy(
+                        selectedIndex = event.index
+                    )
+                }
+            }
         }
     }
+
+
+    private fun observeFavoriteTvShow() {
+        observeFavoriteJob?.cancel()
+        observeFavoriteJob = repository
+            .getFavoriteTvShow()
+            .onEach { favorite ->
+                _state.update {
+                    it.copy(
+                        favoriteTvShows = favorite
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun getTvShows() {
+        getTvShowsListUseCase().onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _state.update {
+                        it.copy(
+                            tvShows = result.data ?: emptyList(),
+                            isLoading = false
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    _state.update {
+                        it.copy(
+                            error = result.message ?: "An unknown error"
+                        )
+                    }
+                }
+
+                is Resource.Loading -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+}
+
 
 //    fun onEvent(event: TvShowsEvent) {
 //        when (event) {
@@ -90,38 +152,6 @@ class TvShowsListViewModel @Inject constructor(
 //            _uiEvent.send(event)
 //        }
 //    }
-
-    private fun getTvShows() {
-        getTvShowsListUseCase().onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    _state.update {
-                        it.copy(
-                            tvShows = result.data ?: emptyList(),
-                            isLoading = false
-                        )
-                    }
-                }
-
-                is Resource.Error -> {
-                    _state.update {
-                        it.copy(
-                            error = result.message ?: "An unknown error"
-                        )
-                    }
-                }
-
-                is Resource.Loading -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = true
-                        )
-                    }
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-}
 /*
 package com.example.jetpack.viewmodels
 import android.app.Application

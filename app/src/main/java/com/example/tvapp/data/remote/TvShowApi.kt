@@ -12,4 +12,7 @@ interface TvShowApi {
 
     @GET("/shows/{id}")
     suspend fun getShowById(@Path("id") id: Int): TvShowDetailDto
+
+    @GET("/search/shows?q={query}")
+    suspend fun searchShows(@Path("query")query: String): List<TvShowDto>
 }

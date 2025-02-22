@@ -17,7 +17,7 @@ class GetTvShowsListUseCase @Inject constructor(
     operator fun invoke(): Flow<Resource<List<TvShow>>> = flow {
         try {
             emit(Resource.Loading())
-            val tvShowList = repository.getShows().map { it.toTvShow() }
+            val tvShowList = repository.getShows()
             emit(Resource.Success(tvShowList))
         } catch (e: HttpException) {
             emit(Resource.Error("Something goes wrong: " + e.localizedMessage))

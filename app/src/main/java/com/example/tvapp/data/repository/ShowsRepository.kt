@@ -5,6 +5,7 @@ import com.example.tvapp.data.remote.TvShowApi
 import com.example.tvapp.data.remote.dto.TvShowDto
 import com.example.tvapp.data.remote.dto.details.TvShowDetailDto
 import com.example.tvapp.data.remote.mappers.toTvShow
+import com.example.tvapp.data.remote.mappers.toTvShowDetail
 import com.example.tvapp.data.remote.mappers.toTvShowDetailEntity
 import com.example.tvapp.data.remote.mappers.toTvShowEntity
 import com.example.tvapp.domain.models.TvShow
@@ -19,17 +20,20 @@ class ShowsRepositoryImp @Inject constructor(
     private val favoriteTvShowDao: FavoriteTvShowDao
 ) : ShowsRepository {
 
-    override suspend fun getShows(): List<TvShowDto> {
+    override suspend fun getShows(): List<TvShow> {
         return api.getShows()
+            .map { it.toTvShow() }
     }
 
-    override suspend fun getShowById(id: Int): TvShowDetailDto {
+    override suspend fun getShowById(id: Int): TvShowDetail {
         return api.getShowById(id)
+            .toTvShowDetail()
     }
 
     override fun getFavoriteTvShow(): Flow<List<TvShow>> {
         return favoriteTvShowDao.getFavoriteTvShows().map { tvShowEntities ->
-            tvShowEntities.map { it.toTvShow() }
+            tvShowEntities
+                .map { it.toTvShow() }
         }
     }
 
@@ -55,5 +59,9 @@ class ShowsRepositoryImp @Inject constructor(
         return favoriteTvShowDao.deleteFavoriteTvShowById(id)
     }
 
+    override suspend fun searchTvShow(name: String): List<TvShow> {
+        return api.searchShows(name)
+            .map { it.toTvShow() }
+    }
 
 }

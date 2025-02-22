@@ -22,11 +22,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tvapp.domain.models.TvShow
+import com.example.tvapp.presentation.ListOFTvShows.components.EmbeddedSearchBar
 import com.example.tvapp.presentation.ListOFTvShows.components.TvShowListItem
+import com.example.tvapp.presentation.ListOFTvShows.components.TvShowSearchBar
 
 @Composable
 fun TvShowListScreenRoot(
@@ -38,7 +41,7 @@ fun TvShowListScreenRoot(
     TvShowListScreen(
         state = state,
         onEvent = { tvShowsEvent ->
-            when(tvShowsEvent) {
+            when (tvShowsEvent) {
                 is TvShowsEvent.OnTvShowClick -> onClickTvShow(tvShowsEvent.tvShow)
                 else -> Unit
             }
@@ -53,6 +56,9 @@ fun TvShowListScreen(
     state: TvShowsListState,
     onEvent: (TvShowsEvent) -> Unit
 ) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val snackbarHostState = remember {
         SnackbarHostState()
     }
@@ -86,7 +92,7 @@ fun TvShowListScreen(
 //            }
 //        }
 //    }
-    
+
 
     Scaffold(
 //        bottomBar = {
@@ -97,16 +103,32 @@ fun TvShowListScreen(
 //                }
 //            )
 //        }
+        topBar = {
+            TvShowSearchBar(
+                searchQuery = state.searchQuery ?: "",
+                onSearchQueryChange = {
+                    onEvent(TvShowsEvent.OnSearchQueryChange(it))
+                },
+                onImeSearch = {
+                    keyboardController?.hide()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 4.dp)
+            )
+        }
     ) { padding ->
-        Column( modifier = Modifier
-            .padding(paddingValues = padding),
+        Column(
+            modifier = Modifier
+                .padding(paddingValues = padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TabRow(
                 selectedTabIndex = state.selectedIndex,
                 modifier = Modifier
                     //.padding(vertical = 12.dp)
-                    .padding(top = padding.calculateTopPadding())
+                    //.padding(top = padding.calculateTopPadding())
                     .fillMaxWidth()
             ) {
                 Tab(
@@ -155,7 +177,7 @@ fun TvShowListScreen(
                     )
                 ) {
 
-                    if(state.selectedIndex == 0) {
+                    if (state.selectedIndex == 0) {
                         item {
                             Text(
                                 text = "Tv shows",
@@ -165,7 +187,7 @@ fun TvShowListScreen(
                         items(
                             state.tvShows,
                             key = { it.id }
-                        ) {tvShow ->
+                        ) { tvShow ->
                             TvShowListItem(
                                 tvShow = tvShow,
                                 //OnNavigateToTvShow ={},

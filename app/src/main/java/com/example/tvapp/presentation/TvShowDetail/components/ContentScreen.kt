@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -92,6 +94,23 @@ fun ContentScreen(
                 Text(text = "Genres: ", style = MaterialTheme.typography.titleMedium)
                 tvShow.genres.forEach { genre ->
                     Text(text = genre, style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+            LazyRow(
+                modifier = Modifier
+                    .padding(vertical = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items(
+                    state.episodes!!//TODO nice comp list fun, here when circle if empty or list
+                ) { episode ->
+
+                        EpisodeListItem(
+                            episode = episode,
+                            modifier = Modifier
+                        )
+
                 }
             }
         }

@@ -2,16 +2,16 @@ package com.example.tvapp.presentation.ListOFTvShows
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.query
 import com.example.tvapp.domain.repository.ShowsRepository
 import com.example.tvapp.domain.use_case.get_tvShows.GetTvShowsListByNameUseCase
 import com.example.tvapp.domain.use_case.get_tvShows.GetTvShowsListUseCase
 import com.example.tvapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -42,7 +42,7 @@ class TvShowsListViewModel @Inject constructor(
         )
 
     private var observeFavoriteJob: Job? = null
-    private var observeSearchJob: Job? = null
+    private var searchJob: Job? = null
 
 //    val state = _state.asStateFlow()
 //
@@ -93,18 +93,21 @@ class TvShowsListViewModel @Inject constructor(
     private fun observeSearchTvShow() {
         state
             .map { it.searchQuery }
+            .distinctUntilChanged()
+            .debounce(500L)
             .onEach { query ->
                 when {
-                    query!!.isBlank() -> {
+                    query.isBlank() -> {
                         _state.update {
                             it.copy(
+                                //searchResults = _state.value.tvShows,
                                 error = null
                             )
                         }
                     }
                     query.length >= 2 -> {
-                        observeSearchJob?.cancel()
-                        observeSearchJob = searchTvShow(query)
+                        searchJob?.cancel()
+                        searchJob = searchTvShow(query)
                     }
                 }
             }
@@ -123,7 +126,9 @@ class TvShowsListViewModel @Inject constructor(
                     is Resource.Success -> {
                         _state.update {
                             it.copy(
-                                tvShows = result.data ?: emptyList()
+                                isLoading = false,
+                                error = null,
+                                searchResults = result.data!!
                             )
                         }
                     }
@@ -131,6 +136,8 @@ class TvShowsListViewModel @Inject constructor(
                     is Resource.Error -> {
                         _state.update {
                             it.copy(
+                                searchResults = emptyList(),
+                                isLoading = false,
                                 error = result.message ?: "An unknown error"
                             )
 

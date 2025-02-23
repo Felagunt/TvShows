@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,6 +60,12 @@ fun TvShowListScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val searchResultListState = rememberLazyListState()
+    LaunchedEffect(state.searchResults) {
+        searchResultListState.animateScrollToItem(0)
+    }
+
+
     val snackbarHostState = remember {
         SnackbarHostState()
     }
@@ -105,7 +112,7 @@ fun TvShowListScreen(
 //        }
         topBar = {
             TvShowSearchBar(
-                searchQuery = state.searchQuery ?: "",
+                searchQuery = state.searchQuery,
                 onSearchQueryChange = {
                     onEvent(TvShowsEvent.OnSearchQueryChange(it))
                 },
@@ -185,7 +192,7 @@ fun TvShowListScreen(
                             )
                         }
                         items(
-                            state.tvShows,
+                            state.searchResults.ifEmpty { state.tvShows },//TODO is it?
                             key = { it.id }
                         ) { tvShow ->
                             TvShowListItem(

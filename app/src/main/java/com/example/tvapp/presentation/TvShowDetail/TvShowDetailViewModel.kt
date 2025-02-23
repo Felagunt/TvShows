@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tvapp.domain.repository.ShowsRepository
+import com.example.tvapp.domain.use_case.GetTvShowsEpisodesUseCase
 import com.example.tvapp.domain.use_case.get_tvShow.GetTvShowUseCase
 import com.example.tvapp.presentation.Route
 import com.example.tvapp.util.Resource
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TvShowDetailViewModel @Inject constructor(
     private val getTvShowUseCase: GetTvShowUseCase,
+    private val getTvShowsEpisodesUseCase: GetTvShowsEpisodesUseCase,
     private val repository: ShowsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -32,6 +34,7 @@ class TvShowDetailViewModel @Inject constructor(
     val state = _state.onStart {
         getTvShow(tvShowId)
         observeFavoriteStatus()
+        getTvShowsEpisodes(tvShowId)
     }
         .stateIn(
             viewModelScope,
@@ -93,6 +96,38 @@ class TvShowDetailViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+
+    private fun getTvShowsEpisodes(id: Int) {
+        getTvShowsEpisodesUseCase(id).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _state.update {
+                        it.copy(
+                            episodes = result.data,
+                            isLoading = false
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    _state.update {
+                        it.copy(
+                            error = result.message ?: "An unknown error"
+                        )
+                    }
+                }
+
+                is Resource.Loading -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
 
     private fun observeFavoriteStatus() {
         repository

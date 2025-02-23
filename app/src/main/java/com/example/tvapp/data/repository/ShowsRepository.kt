@@ -4,10 +4,12 @@ import com.example.tvapp.data.database.FavoriteTvShowDao
 import com.example.tvapp.data.remote.TvShowApi
 import com.example.tvapp.data.remote.dto.TvShowDto
 import com.example.tvapp.data.remote.dto.details.TvShowDetailDto
+import com.example.tvapp.data.remote.mappers.toEpisode
 import com.example.tvapp.data.remote.mappers.toTvShow
 import com.example.tvapp.data.remote.mappers.toTvShowDetail
 import com.example.tvapp.data.remote.mappers.toTvShowDetailEntity
 import com.example.tvapp.data.remote.mappers.toTvShowEntity
+import com.example.tvapp.domain.models.Episode
 import com.example.tvapp.domain.models.TvShow
 import com.example.tvapp.domain.models.TvShowDetail
 import com.example.tvapp.domain.repository.ShowsRepository
@@ -62,6 +64,11 @@ class ShowsRepositoryImp @Inject constructor(
     override suspend fun searchTvShow(name: String): List<TvShow> {
         return api.searchShows(name)
             .map { it.toTvShow() }
+    }
+
+    override suspend fun getTvShowsEpisodes(id: Int): List<Episode> {
+        return api.getEpisodes(id)
+            .map { it.toEpisode() }
     }
 
 }

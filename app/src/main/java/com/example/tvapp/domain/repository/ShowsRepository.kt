@@ -1,7 +1,6 @@
 package com.example.tvapp.domain.repository
 
-import com.example.tvapp.data.remote.dto.TvShowDto
-import com.example.tvapp.data.remote.dto.details.TvShowDetailDto
+import com.example.tvapp.domain.models.Episode
 import com.example.tvapp.domain.models.TvShow
 import com.example.tvapp.domain.models.TvShowDetail
 import kotlinx.coroutines.flow.Flow
@@ -18,4 +17,6 @@ interface ShowsRepository {
     suspend fun deleteFromFavorite(id: Int)
 
     suspend fun searchTvShow(name: String): List<TvShow>
+
+    suspend fun getTvShowsEpisodes(id: Int): List<Episode>
 }

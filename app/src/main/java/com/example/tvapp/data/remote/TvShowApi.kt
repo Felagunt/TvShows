@@ -2,6 +2,7 @@ package com.example.tvapp.data.remote
 
 import com.example.tvapp.data.remote.dto.TvShowDto
 import com.example.tvapp.data.remote.dto.details.TvShowDetailDto
+import com.example.tvapp.data.remote.dto.episodes.EpisodesDtoItem
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -15,4 +16,8 @@ interface TvShowApi {
 
     @GET("/search/shows?q={query}")
     suspend fun searchShows(@Path("query")query: String): List<TvShowDto>
+
+    //https://api.tvmaze.com/shows/1/episodes
+    @GET("shows/{id}/episodes")
+    suspend fun getEpisodes(@Path("id")id: Int): List<EpisodesDtoItem>
 }

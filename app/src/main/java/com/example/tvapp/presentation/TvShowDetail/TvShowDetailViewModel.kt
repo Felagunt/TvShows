@@ -61,6 +61,9 @@ class TvShowDetailViewModel @Inject constructor(
             is TvShowDetailEvent.OnNavigationBack -> {
                 //sendUiEvent(UiEvent.PopBackStack)
             }
+            is TvShowDetailEvent.OnEpisodeClick -> {
+
+            }
 
             else -> {}
         }

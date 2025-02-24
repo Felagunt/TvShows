@@ -135,7 +135,10 @@ fun TvShowDetailScreen(
         ContentScreen(
             state = state,
             Modifier.padding(paddingValues)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            onEpisodeClick = {
+                onEvent(TvShowDetailEvent.OnEpisodeClick(it))
+            }
         )
         if (state.error.isNotBlank()) {
             ErrorScreen(

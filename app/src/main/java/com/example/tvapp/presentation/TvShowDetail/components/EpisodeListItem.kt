@@ -51,8 +51,8 @@ fun EpisodeListItem(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
-                modifier = Modifier
-                    .height(100.dp),
+                modifier = Modifier,
+                    //.height(100.dp),
                 contentAlignment = Alignment.Center
             ) {
                 val painter = rememberAsyncImagePainter(
@@ -84,13 +84,14 @@ fun EpisodeListItem(
                     style = MaterialTheme.typography.titleMedium,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = "Avg rating: ${episode.rating}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+
             }
             Text(
-                text = "e ${episode.number} of s ${episode.season}",
+                text = "Avg rating: ${episode.rating}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "episode ${episode.number} of season ${episode.season}",
                 style = MaterialTheme.typography.bodyMedium
             )
         }

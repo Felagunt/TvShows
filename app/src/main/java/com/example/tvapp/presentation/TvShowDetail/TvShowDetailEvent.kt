@@ -6,5 +6,4 @@ sealed interface TvShowDetailEvent {
     data object OnNavigationBack: TvShowDetailEvent
     data object OnAddFavoriteTvShow: TvShowDetailEvent
     data class  OnEpisodeClick(val episode: Episode): TvShowDetailEvent
-    data object OnNavigateBackEpisode: TvShowDetailEvent
 }

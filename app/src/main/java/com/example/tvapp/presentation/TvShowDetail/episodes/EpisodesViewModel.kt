@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tvapp.domain.models.Episode
+import com.example.tvapp.domain.repository.ShowsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,14 +17,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EpisodesViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    //savedStateHandle: SavedStateHandle,
+    private val repository: ShowsRepository
 ) : ViewModel() {
 
-    private val episode = savedStateHandle.toRoute<Episode>()
+    //private val episodeId = savedStateHandle.toRoute<Episode>().id
+
+    //private val showId: Int? = null
 
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.onStart {
-        getEpisode()
+        //getEpisode()
     }
         .stateIn(
             viewModelScope,
@@ -49,15 +53,25 @@ class EpisodesViewModel @Inject constructor(
             is EpisodeAction.OnNavigateBackEpisode -> {
 
             }
+            is EpisodeAction.OnSelectedEpisodeChange -> {
+                _state.update {
+                    it.copy(
+                        episode = action.episode
+                    )
+                }
+            }
         }
     }
-
-    private fun getEpisode() = flow<EpisodeState> {//TODO
-        _state.update {
-            it.copy(
-                episode = episode
-            )
-        }
-    }
+//
+//    private fun getEpisode() = flow<EpisodeState> {//TODO
+//        repository.getTvShowsEpisodes(episodeId)
+//
+//
+//        _state.update {
+//            it.copy(
+//                episode = null
+//            )
+//        }
+//    }
 }
 

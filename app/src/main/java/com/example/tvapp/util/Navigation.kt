@@ -3,7 +3,14 @@ package com.example.tvapp.util
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -11,8 +18,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tvapp.presentation.ListOFTvShows.TvShowListScreenRoot
 import com.example.tvapp.presentation.ListOFTvShows.TvShowsListViewModel
 import com.example.tvapp.presentation.Route
+import com.example.tvapp.presentation.SelectedEpisodeViewModel
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailScreenRoot
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailViewModel
+import com.example.tvapp.presentation.TvShowDetail.episodes.EpisodeAction
+import com.example.tvapp.presentation.TvShowDetail.episodes.EpisodesDetailScreenRoot
+import com.example.tvapp.presentation.TvShowDetail.episodes.EpisodesViewModel
 
 @Composable
 fun Navigation() {
@@ -40,16 +51,46 @@ fun Navigation() {
             }
 
             composable<Route.TvShowDetail>(
-                enterTransition = { slideInHorizontally{ initialOffset ->
-                    initialOffset
-                } },
-                exitTransition = { slideOutHorizontally { initialOffset ->
-                    initialOffset
-                } }
-            ) { 
+                enterTransition = {
+                    slideInHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                },
+                exitTransition = {
+                    slideOutHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                }
+            ) {
                 val viewModel = hiltViewModel<TvShowDetailViewModel>()
+                val selectedEpisodeViewModel =
+                    it.sharedViewModel<SelectedEpisodeViewModel>(navController)
 
+                LaunchedEffect(true) {
+                    selectedEpisodeViewModel.onSelectedEpisode(null)
+                }
                 TvShowDetailScreenRoot(
+                    viewModel = viewModel,
+                    onBackClick = {
+                        navController.navigateUp()
+                    },
+                    onEpisodeClick = { episode ->
+                        selectedEpisodeViewModel.onSelectedEpisode(episode)//TODO navigation to episode
+                    }
+                )
+            }
+
+            composable<Route.EpisodeDetail> {
+                val viewModel = hiltViewModel<EpisodesViewModel>()
+                val selectedViewModel = it.sharedViewModel<SelectedEpisodeViewModel>(navController)
+                val selectedEpisode by selectedViewModel.selectedEpisode.collectAsStateWithLifecycle()
+                LaunchedEffect(selectedEpisode) {
+                    selectedEpisode?.let {
+                        viewModel.onAction(EpisodeAction.OnSelectedEpisodeChange(it))
+                    }
+                }
+
+                EpisodesDetailScreenRoot(
                     viewModel = viewModel,
                     onBackClick = {
                         navController.navigateUp()
@@ -60,6 +101,18 @@ fun Navigation() {
 
     }
 }
+
+@Composable
+inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
+    navController: NavController
+): T {
+    val navGraphRoute = destination.parent?.route ?: return hiltViewModel<T>()
+    val parentEntry = remember(this) {
+        navController.getBackStackEntry(navGraphRoute)
+    }
+    return hiltViewModel(parentEntry)
+}
+
 
 //
 //@Composable

@@ -8,7 +8,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,7 +15,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -26,18 +24,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.tvapp.presentation.Route
+import com.example.tvapp.domain.models.Episode
 import com.example.tvapp.presentation.TvShowDetail.components.ContentScreen
 import com.example.tvapp.presentation.TvShowDetail.components.ErrorScreen
 import com.example.tvapp.presentation.TvShowDetail.components.LoadingScreen
-import com.example.tvapp.presentation.UiEvent
-import com.example.tvapp.util.CollectFlowWithLifecycle
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun TvShowDetailScreenRoot(
     viewModel: TvShowDetailViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onEpisodeClick: (Episode) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -46,6 +42,7 @@ fun TvShowDetailScreenRoot(
         onEvent = { event ->
             when (event) {
                 is TvShowDetailEvent.OnNavigationBack -> onBackClick()
+                is TvShowDetailEvent.OnEpisodeClick -> onEpisodeClick(event.episode)
                 else -> Unit
             }
             viewModel.onEvent(event)

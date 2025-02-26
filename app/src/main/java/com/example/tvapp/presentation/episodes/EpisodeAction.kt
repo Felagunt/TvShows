@@ -1,4 +1,4 @@
-package com.example.tvapp.presentation.TvShowDetail.episodes
+package com.example.tvapp.presentation.episodes
 
 import com.example.tvapp.domain.models.Episode
 

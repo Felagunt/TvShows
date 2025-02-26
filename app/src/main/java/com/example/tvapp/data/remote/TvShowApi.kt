@@ -17,7 +17,7 @@ interface TvShowApi {
     @GET("/search/shows?q={query}")
     suspend fun searchShows(@Path("query")query: String): List<TvShowDto>
 
-    //https://api.tvmaze.com/shows/1/episodes
+    //https://api.tvmaze.com/shows/1/episodes list of episodes of show with id
     @GET("shows/{id}/episodes")
     suspend fun getEpisodes(@Path("id")id: Int): List<EpisodesDtoItem>
 }

@@ -1,10 +1,11 @@
-package com.example.tvapp.presentation.TvShowDetail.episodes
+package com.example.tvapp.presentation.episodes
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tvapp.domain.models.Episode
+import com.example.tvapp.domain.models.TvShow
 import com.example.tvapp.domain.repository.ShowsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,17 +18,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EpisodesViewModel @Inject constructor(
-    //savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val repository: ShowsRepository
 ) : ViewModel() {
 
     //private val episodeId = savedStateHandle.toRoute<Episode>().id
 
-    //private val showId: Int? = null
+    private val showId = savedStateHandle.toRoute<TvShow>().id
 
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.onStart {
-        //getEpisode()
+        getEpisode()
     }
         .stateIn(
             viewModelScope,
@@ -62,16 +63,17 @@ class EpisodesViewModel @Inject constructor(
             }
         }
     }
-//
-//    private fun getEpisode() = flow<EpisodeState> {//TODO
-//        repository.getTvShowsEpisodes(episodeId)
-//
-//
-//        _state.update {
-//            it.copy(
-//                episode = null
-//            )
-//        }
-//    }
+
+    private fun getEpisode() = flow<EpisodeState> {//TODO
+        val result = repository.getTvShowsEpisodes(showId)
+            .firstOrNull { it.id == _state.value.episode?.id }
+
+
+        _state.update {
+            it.copy(
+                episode = result
+            )
+        }
+    }
 }
 

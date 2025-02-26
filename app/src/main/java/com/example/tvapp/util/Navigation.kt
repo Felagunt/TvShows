@@ -21,9 +21,9 @@ import com.example.tvapp.presentation.Route
 import com.example.tvapp.presentation.SelectedEpisodeViewModel
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailScreenRoot
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailViewModel
-import com.example.tvapp.presentation.TvShowDetail.episodes.EpisodeAction
-import com.example.tvapp.presentation.TvShowDetail.episodes.EpisodesDetailScreenRoot
-import com.example.tvapp.presentation.TvShowDetail.episodes.EpisodesViewModel
+import com.example.tvapp.presentation.episodes.EpisodeAction
+import com.example.tvapp.presentation.episodes.EpisodesDetailScreenRoot
+import com.example.tvapp.presentation.episodes.EpisodesViewModel
 
 @Composable
 fun Navigation() {
@@ -65,6 +65,7 @@ fun Navigation() {
                 val viewModel = hiltViewModel<TvShowDetailViewModel>()
                 val selectedEpisodeViewModel =
                     it.sharedViewModel<SelectedEpisodeViewModel>(navController)
+                val state by viewModel.state.collectAsStateWithLifecycle()
 
                 LaunchedEffect(true) {
                     selectedEpisodeViewModel.onSelectedEpisode(null)
@@ -75,6 +76,9 @@ fun Navigation() {
                         navController.navigateUp()
                     },
                     onEpisodeClick = { episode ->
+                        navController.navigate(
+                            Route.EpisodeDetail(state.tvShow!!.id)//TODO is it crazy enough?
+                        )
                         selectedEpisodeViewModel.onSelectedEpisode(episode)//TODO navigation to episode
                     }
                 )

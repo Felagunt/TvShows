@@ -67,7 +67,7 @@ private fun EpisodesDetailsScreen(
     if(state.isLoading) {
         CircularProgressIndicator()
     }
-    if (state.errorMsg!!.isNotBlank()) {
+    if (state.errorMsg?.isNotBlank() == true) {
         Text(
             text = "Error: ${state.errorMsg}",
             style = MaterialTheme.typography.titleLarge,

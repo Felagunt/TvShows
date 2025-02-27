@@ -7,19 +7,25 @@ import androidx.navigation.toRoute
 import com.example.tvapp.domain.models.Episode
 import com.example.tvapp.domain.models.TvShow
 import com.example.tvapp.domain.repository.ShowsRepository
+import com.example.tvapp.domain.use_case.GetTvShowsEpisodesUseCase
+import com.example.tvapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EpisodesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: ShowsRepository
+    private val getTvShowsEpisodesUseCase: GetTvShowsEpisodesUseCase,
+    //private val repository: ShowsRepository
 ) : ViewModel() {
 
     //private val episodeId = savedStateHandle.toRoute<Episode>().id
@@ -28,7 +34,7 @@ class EpisodesViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.onStart {
-        getEpisode()
+        //getEpisode()
     }
         .stateIn(
             viewModelScope,
@@ -60,20 +66,54 @@ class EpisodesViewModel @Inject constructor(
                         episode = action.episode
                     )
                 }
+                viewModelScope.launch {
+                    getTvShowsEpisodes(showId = showId, action.episode.id)
+                }
             }
         }
     }
 
-    private fun getEpisode() = flow<EpisodeState> {//TODO
-        val result = repository.getTvShowsEpisodes(showId)
-            .firstOrNull { it.id == _state.value.episode?.id }
+    private fun getTvShowsEpisodes(showId: Int, episodeId: Int) {
+        getTvShowsEpisodesUseCase(showId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _state.update {
+                        it.copy(
+                            episode = result.data?.firstOrNull { it.id == episodeId },
+                            isLoading = false
+                        )
+                    }
+                }
 
+                is Resource.Error -> {
+                    _state.update {
+                        it.copy(
+                            errorMsg = result.message ?: "An unknown error"
+                        )
+                    }
+                }
 
-        _state.update {
-            it.copy(
-                episode = result
-            )
-        }
+                is Resource.Loading -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
+//
+//    private fun getEpisode() = flow<EpisodeState> {//TODO
+//        val result = repository.getTvShowsEpisodes(showId)
+//            .firstOrNull { it.id == _state.value.episode?.id }
+//
+//
+//        _state.update {
+//            it.copy(
+//                episode = result
+//            )
+//        }
+//    }
 }
 

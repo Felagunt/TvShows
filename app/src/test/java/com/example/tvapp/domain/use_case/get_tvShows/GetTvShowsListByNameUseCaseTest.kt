@@ -2,6 +2,7 @@ package com.example.tvapp.domain.use_case.get_tvShows
 
 import com.example.tvapp.data.remote.dto.Image
 import com.example.tvapp.data.remote.dto.TvShowDto
+import com.example.tvapp.data.remote.mappers.result
 import com.example.tvapp.domain.models.TvShow
 import com.example.tvapp.domain.repository.ShowsRepository
 import com.example.tvapp.util.Resource
@@ -16,6 +17,7 @@ import org.junit.Assert.assertEquals
 class GetTvShowsListByNameUseCaseTest {
 
     private val repository: ShowsRepository = mock()
+    private val getUseCase: GetTvShowsListByNameUseCase = mock()
 
     @Test
     fun test_success() = runTest {
@@ -32,8 +34,23 @@ class GetTvShowsListByNameUseCaseTest {
         `when`(repository.searchTvShow("bitten"))
             .thenReturn(searchShows())
         val useCase = GetTvShowsListByNameUseCase(repository)
-        `when`(useCase.invoke("bitten"))
+        `when`(getUseCase.invoke("bitten"))//TODO mock
             .thenReturn(flowOf( Resource.Error("error")))
+        val response = useCase.invoke("bitten")
+        response.collect{ result: Resource<List<TvShow>> ->
+            result.message
+        }
+
+        assertEquals("error", response.last().message)
+    }
+
+    @Test
+    fun test_exception() = runTest {//TODO
+        `when`(repository.searchTvShow("bitten"))
+            .thenReturn(searchShows())
+        val useCase = GetTvShowsListByNameUseCase(repository)
+        `when`(useCase.invoke("bitten"))
+            .thenThrow(RuntimeException("error"))
         val response = useCase.invoke("bitten")
 
         assertEquals("error", response.last().message)

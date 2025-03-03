@@ -1,8 +1,5 @@
 package com.example.tvapp.domain.use_case.get_tvShow
 
-import com.example.tvapp.data.remote.mappers.toTvShow
-import com.example.tvapp.data.remote.mappers.toTvShowDetail
-import com.example.tvapp.domain.models.TvShow
 import com.example.tvapp.domain.models.TvShowDetail
 import com.example.tvapp.domain.repository.ShowsRepository
 import com.example.tvapp.util.Resource

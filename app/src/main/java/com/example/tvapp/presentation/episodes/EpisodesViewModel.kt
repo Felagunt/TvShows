@@ -34,7 +34,12 @@ class EpisodesViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.onStart {
-        //getEpisode()
+        if(_state.value.episode == null){
+            getTvShowsEpisodes(showId,1)
+        } else {
+            _state.value.episode?.id?.let {episodeId ->
+                getTvShowsEpisodes(showId, episodeId) }
+        }
     }
         .stateIn(
             viewModelScope,
@@ -66,9 +71,9 @@ class EpisodesViewModel @Inject constructor(
                         episode = action.episode
                     )
                 }
-                viewModelScope.launch {
-                    getTvShowsEpisodes(showId = showId, action.episode.id)
-                }
+//                viewModelScope.launch {
+//                    getTvShowsEpisodes(showId = showId, action.episode.id)
+//                }
             }
         }
     }

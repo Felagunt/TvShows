@@ -16,9 +16,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.tvapp.presentation.ListOFTvShows.TvShowListScreenRoot
+import com.example.tvapp.presentation.ListOFTvShows.TvShowsEvent
 import com.example.tvapp.presentation.ListOFTvShows.TvShowsListViewModel
 import com.example.tvapp.presentation.Route
 import com.example.tvapp.presentation.SelectedEpisodeViewModel
+import com.example.tvapp.presentation.TvShowDetail.TvShowDetailEvent
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailScreenRoot
 import com.example.tvapp.presentation.TvShowDetail.TvShowDetailViewModel
 import com.example.tvapp.presentation.episodes.EpisodeAction
@@ -40,6 +42,8 @@ fun Navigation() {
                 popEnterTransition = { slideInHorizontally() }
             ) {
                 val viewModel = hiltViewModel<TvShowsListViewModel>()
+
+
                 TvShowListScreenRoot(
                     viewModel = viewModel,
                     onClickTvShow = { tvShow ->
@@ -77,7 +81,7 @@ fun Navigation() {
                     },
                     onEpisodeClick = { episode ->
                         navController.navigate(
-                            Route.EpisodeDetail(state.tvShow!!.id)//TODO is it crazy enough?
+                            Route.EpisodeDetail(state.tvShow?.id ?: 1)//TODO is it crazy enough?
                         )
                         selectedEpisodeViewModel.onSelectedEpisode(episode)//TODO navigation to episode
                     }

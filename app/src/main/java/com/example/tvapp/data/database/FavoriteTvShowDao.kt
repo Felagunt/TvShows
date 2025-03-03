@@ -3,13 +3,14 @@ package com.example.tvapp.data.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteTvShowDao {
 
-    //@Upsert
-    @Insert
+    @Upsert
+    //@Insert
     suspend fun upsert(tvShow: TvShowEntity)
 
     @Query("SELECT * FROM tvShowsFavorite")

@@ -8,5 +8,5 @@ data class TvShowDetailState(
     val isFavorite: Boolean = false,
     val tvShow: TvShowDetail? = null,
     val episodes: List<Episode>? = null,
-    val error: String = ""
+    var error: String = ""
 )

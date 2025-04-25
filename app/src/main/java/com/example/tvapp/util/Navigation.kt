@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.tvapp.presentation.ListOFTvShows.TvShowListScreenRoot
 import com.example.tvapp.presentation.ListOFTvShows.TvShowsEvent
 import com.example.tvapp.presentation.ListOFTvShows.TvShowsListViewModel
@@ -71,34 +72,31 @@ fun Navigation() {
                     it.sharedViewModel<SelectedEpisodeViewModel>(navController)
                 val state by viewModel.state.collectAsStateWithLifecycle()
 
-                LaunchedEffect(true) {
-                    selectedEpisodeViewModel.onSelectedEpisode(null)
-                }
+//                LaunchedEffect(true) {
+//                    selectedEpisodeViewModel.onSelectedEpisode(null)
+//                }
                 TvShowDetailScreenRoot(
                     viewModel = viewModel,
                     onBackClick = {
                         navController.navigateUp()
                     },
-                    onEpisodeClick = { episode ->
-                        navController.navigate(
-                            Route.EpisodeDetail(state.tvShow?.id ?: 1)//TODO is it crazy enough?
-                        )
-                        selectedEpisodeViewModel.onSelectedEpisode(episode)//TODO navigation to episode
+                    onEpisodeClick = { tvShowId,episodeId ->
+                        //val showId = state.tvShow?.id ?: return@TvShowDetailScreenRoot
+                        navController.navigate(Route.EpisodeDetail(tvShowId, episodeId))
                     }
                 )
             }
 
             composable<Route.EpisodeDetail> {
                 val viewModel = hiltViewModel<EpisodesViewModel>()
-                val selectedViewModel = it.sharedViewModel<SelectedEpisodeViewModel>(navController)
-                val selectedEpisode by selectedViewModel.selectedEpisode.collectAsStateWithLifecycle()
-                LaunchedEffect(selectedEpisode) {
-                    selectedEpisode?.let {
-                        viewModel.onAction(EpisodeAction.OnSelectedEpisodeChange(it))
-                    }
+                val route = it.toRoute<Route.EpisodeDetail>()
+                LaunchedEffect(Unit) {
+                    viewModel.onAction(EpisodeAction.FetchEpisode(route.showId, route.episodeId))
                 }
 
                 EpisodesDetailScreenRoot(
+                    showId = route.showId,
+                    episodeId = route.episodeId,
                     viewModel = viewModel,
                     onBackClick = {
                         navController.navigateUp()

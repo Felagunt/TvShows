@@ -10,8 +10,10 @@ import com.example.tvapp.domain.use_case.get_tvShow.GetTvShowUseCase
 import com.example.tvapp.presentation.Route
 import com.example.tvapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -29,6 +31,9 @@ class TvShowDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val tvShowId = savedStateHandle.toRoute<Route.TvShowDetail>().id.toInt()
+
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     private val _state = MutableStateFlow(TvShowDetailState())
     val state = _state.onStart {
@@ -50,9 +55,11 @@ class TvShowDetailViewModel @Inject constructor(
                 viewModelScope.launch {
                     if (state.value.isFavorite) {
                         repository.deleteFromFavorite(tvShowId)
+                        _uiEvent.emit(UiEvent.ShowSnackbar("Delated from favorite"))
                     } else {
                         state.value.tvShow?.let { tvShow ->
                             repository.markAsFavorite(tvShow)
+                            _uiEvent.emit(UiEvent.ShowSnackbar("Added to favorite"))
                         }
                     }
                 }
@@ -87,6 +94,7 @@ class TvShowDetailViewModel @Inject constructor(
                             error = result.message ?: "An unknown error"
                         )
                     }
+                    _uiEvent.emit(UiEvent.ShowSnackbar(result?.message ?: "An unknown error"))
                 }
 
                 is Resource.Loading -> {

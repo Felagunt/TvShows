@@ -1,5 +1,6 @@
 package com.example.tvapp.presentation.TvShowDetail
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,10 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tvapp.domain.models.Episode
 import com.example.tvapp.presentation.TvShowDetail.components.ContentScreen
@@ -33,17 +36,33 @@ import com.example.tvapp.presentation.TvShowDetail.components.LoadingScreen
 fun TvShowDetailScreenRoot(
     viewModel: TvShowDetailViewModel,
     onBackClick: () -> Unit,
-    onEpisodeClick: (Episode) -> Unit
+    onEpisodeClick: (Int, Int) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(true) {
+        viewModel.uiEvent.collect {event ->
+            when(event) {
+                is UiEvent.ShowSnackbar -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     TvShowDetailScreen(
         state = state,
         onEvent = { event ->
             when (event) {
                 is TvShowDetailEvent.OnNavigationBack -> onBackClick()
-                is TvShowDetailEvent.OnEpisodeClick -> onEpisodeClick(event.episode)
-                else -> Unit
+                is TvShowDetailEvent.OnEpisodeClick -> {
+                    state.tvShow?.let { tvShow ->
+                        onEpisodeClick(tvShow.id, event.episode.id)
+
+                    }
+                }
+                    else -> Unit
             }
             viewModel.onEvent(event)
         }
@@ -133,8 +152,10 @@ fun TvShowDetailScreen(
             state = state,
             Modifier.padding(paddingValues)
                 .verticalScroll(rememberScrollState()),
-            onEpisodeClick = {
-                onEvent(TvShowDetailEvent.OnEpisodeClick(it))
+            onEpisodeClick = {episode ->
+                state.tvShow?.let {tvShow ->
+                    onEvent(TvShowDetailEvent.OnEpisodeClick(episode))
+                }
             }
         )
         if (state.error.isNotBlank()) {

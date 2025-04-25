@@ -34,17 +34,18 @@ class EpisodesViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.onStart {
-        if(_state.value.episode == null){
-            getTvShowsEpisodes(showId,1)
-        } else {
-            _state.value.episode?.id?.let {episodeId ->
-                getTvShowsEpisodes(showId, episodeId) }
-        }
+//        if (_state.value.episode == null) {
+//            getTvShowsEpisodes(showId, 1)
+//        } else {
+//            _state.value.episode?.id?.let { episodeId ->
+//                getTvShowsEpisodes(showId, episodeId)
+//            }
+//        }
     }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
-            _state
+            _state.value
         )
 //
 //    private val _state = MutableStateFlow(TvShowDetailState())
@@ -65,6 +66,7 @@ class EpisodesViewModel @Inject constructor(
             is EpisodeAction.OnNavigateBackEpisode -> {
 
             }
+
             is EpisodeAction.OnSelectedEpisodeChange -> {
                 _state.update {
                     it.copy(
@@ -74,6 +76,10 @@ class EpisodesViewModel @Inject constructor(
 //                viewModelScope.launch {
 //                    getTvShowsEpisodes(showId = showId, action.episode.id)
 //                }
+            }
+
+            is EpisodeAction.FetchEpisode -> {
+                getTvShowsEpisodes(action.showId, action.episodeId)
             }
         }
     }

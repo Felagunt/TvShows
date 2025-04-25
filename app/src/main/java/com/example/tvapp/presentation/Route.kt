@@ -14,7 +14,7 @@ sealed interface Route {
     data class TvShowDetail(val id: String): Route
 
     @Serializable
-    data class EpisodeDetail(val id: Int): Route
+    data class EpisodeDetail(val showId: Int, val episodeId: Int): Route
 //    @Serializable
 //    data object EpisodeDetail: Route
 

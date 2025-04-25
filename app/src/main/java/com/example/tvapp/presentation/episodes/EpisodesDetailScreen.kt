@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -18,13 +19,19 @@ import com.example.tvapp.presentation.episodes.components.EpisodeHeader
 
 @Composable
 fun EpisodesDetailScreenRoot(
+    showId: Int,
+    episodeId: Int,
     viewModel: EpisodesViewModel,
     onBackClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(showId, episodeId) {
+
+    }
+
     EpisodesDetailsScreen(
-        state = state as EpisodeState,
+        state = state,
         onAction = { action ->
             when (action) {
                 is EpisodeAction.OnNavigateBackEpisode -> {
